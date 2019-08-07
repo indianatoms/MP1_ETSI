@@ -3,33 +3,35 @@ const app = express();
 const publicIp = require('public-ip');
 const exec = require('child_process').exec
 const now = require('nano-time');
+const path = require('path');
 
 //Set static folder
 //app.use(express.static(path.join(__dirname, 'public')))
 
 //homepage
 app.get('/', function (req, res) {
-        res.send('ETSI MP1 - TRY - /timing/current_time || /timing/timing_caps')
-})
+  	res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 
 //display /timing/current_time page
-app.get('/timing/current_time', function (req, res)
+app.get('/timing/current_time', function (req, res) 
 {
-
+	
 //curentlly using UNIX time
-        var seconds = new Date().getTime() / 1000;
-        seconds = parseInt(Math.floor(seconds));
-        //nano seconds do not work properly.
-        var timeInNs = parseInt(now());
-        var istracable = "TRACEABLE";//I asume that unix time is an UTC time therefore it is traceable
- //store value is JSON as required
-                res.json({
-                        seconds : seconds,
-                        nanoSeconds : timeInNs,
-                        timeSourceStatus : istracable
-                        });
+	var seconds = new Date().getTime() / 1000;
+	seconds = parseInt(Math.floor(seconds));
+	//nano seconds do not work properly.
+ 	var timeInNs = parseInt(now());
+//	var timeInNs = now(); 
+	var istracable = "TRACEABLE";//I asume that unix time is an UTC time therefore it is traceable
+ //store value is JSON as required		
+		res.json({
+			seconds : seconds,
+			nanoSeconds : timeInNs,
+			timeSourceStatus : istracable
+			});
 })
 
 function execute(command, callback){
@@ -68,16 +70,16 @@ var myCallback = function(data,data2,data3) {
   var auth;
   var keyNumber;
   if(!data2)
-        {
-        auth="none";
-        KeyNumber = null;
-        }
+	{
+	auth="none";
+	KeyNumber = null;
+	}
   else
-        {
-        auth="SYMMETRIC_KEY";
-        keyNumber = arr2[0]
-        }
-
+	{
+	auth="SYMMETRIC_KEY";
+	keyNumber = arr2[0]
+	}
+  
 //Placing JSON structure on the html site
 //reqdelay and local priorities has a fixed values
 
@@ -89,38 +91,28 @@ timeStamp : {
 ntpServers : [
         {
         ntpServerAddrType : serverAddrType,
-        ntpServerAddr : ip.address(),
+        ntpServerAddr : req.hostname,
         minPollingInterval : minPoll,
         maxPollingInterval : maxPoll,
         localPriority   : 1,
         authenticationOption : auth,
         authenticationKeyNum : keyNumber
         }
-],
-  ptpMasters :
-                [
-                        {
-                        ptpMasterIpAddress : ip.address(),
-                        ptpMasterLocalPriority : priority,
-                        delayReqMaxRate : reqDelay
-                        }
-                ]
-
-        });
-
-  };
+]
+  });
+}
 
 var usingItNow = function(callback){
 execute("ntpq -p | awk '{print $6}'", function(poll){
         execute("cat /etc/ntp.keys", function(keys){
-                execute("cat /etc/linuxptp/ptp4l.conf | grep priority1", function(priority){
-                        callback(poll, keys, priority );
-                });
+		execute("cat /etc/linuxptp/ptp4l.conf | grep priority1", function(priority){
+            		callback(poll, keys, priority );
+		});
         });
     });
 };
 
-
+    
 
 usingItNow(myCallback);
 
