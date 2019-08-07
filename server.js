@@ -18,9 +18,11 @@ mongoose.Promise = global.Promise;
 
 // Connecting to the database
 mongoose.connect(dbConfig.url, {
+//	if (err) throw err;
 	useNewUrlParser: true
 }).then(() => {
     console.log("Successfully connected to the database");    
+//    db = client.db('easy-notes')
 }).catch(err => {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
@@ -28,7 +30,7 @@ mongoose.connect(dbConfig.url, {
 
 // define a simple route
 app.get('/', (req, res) => {
-    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
+    res.json({"message": "."});
 });
 
 require('./app/routes/note.routes.js')(app);

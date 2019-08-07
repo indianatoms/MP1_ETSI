@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
 
-const NoteSchema = mongoose.Schema({
+const AppTerm = mongoose.Schema({
 
+			AppTerminationNotificationSubscription :
+	{
+			subscriptionType  : String,
+			callbackReference : String,
 			_links : {
-			self :   { href : String},
-	
-			subscription : [
-					{href : String,
-					rel  : String}
-				       ]
+					self : {
+							href : {type : String, unique : true}}
+														},
+			appInstanceId     : String
 	}
 },
 {
     versionKey: false // You should be aware of the outcome after set to false
    // _id : false
 });
-NoteSchema.plugin(uniqueValidator);
-module.exports = mongoose.model('Note', NoteSchema);
+module.exports = mongoose.model('Note', AppTerm);
