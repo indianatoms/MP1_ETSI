@@ -23,7 +23,8 @@ const SerAvai = mongoose.Schema({
                                                                                                                                 id                :     String,
 																name              :     String,
 																description       :     String,
-																protocol          :     String,
+																type    	  :     {type : String},
+																protocol	  : 	String,
 																version           :     String,
                                                                                                                                 endpoint          :     String,
 																security          :     {

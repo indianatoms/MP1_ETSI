@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
     res.json({"message": "."});
 });
 
-require('./app/routes/note.routes.js')(app);
+require('./app/routes/sub.routes.js')(app);
 
 // listen for requests
 app.listen(3000, () => {
