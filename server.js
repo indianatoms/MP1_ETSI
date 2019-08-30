@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const basicAuth = require('express-basic-auth')
 
 // create express app
 const app = express();
@@ -27,6 +28,10 @@ mongoose.connect(dbConfig.url, {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
+
+app.use(basicAuth({
+    users: { 'admin': 'supersecret' }
+}))
 
 // define a simple route
 app.get('/', (req, res) => {
