@@ -14,43 +14,9 @@ exports.createService = (req, res) => {
         });
     }
     
-					var isEmpty = true;
-                                        var checker = false;
-                                        var howManyElements = 0;
-                                        for (var itemsFromBodyIndex in req.body.transportInfo.endpoint){
-                                                        console.log(itemsFromBodyIndex);
-                                                        isEmpty = false;
-                                                        if(itemsFromBodyIndex == "uris")
-                                                                {
-                                                                  howManyElements++;
-                                                                  checker = true;
-                                                                }
-                                                        if(itemsFromBodyIndex == "addresses")
-                                                                {
-                                                                  howManyElements++;
-                                                                  checker = true;
-                                                                }
-                                                        if(itemsFromBodyIndex == "alternative")
-                                                                {
-                                                                  howManyElements++;
-                                                                  checker = true;
-                                                                }
-                                                        if(howManyElements > 1)
-                                                                {
-                                                                  checker = false;
-                                                                }
-                                        }
-
-                                        console.log(isEmpty + ' ' + checker);
-                                        if(!(isEmpty || checker))
-                                        {
-                                          res.status(400).send({
-                                                message: "Incorrect Body request. - endpoint"
-                                              });
-                                            return;
-                                        }
-
-    
+  				if(!checkEndpointService(req,res)){
+				  return
+				} 
    
     
 				const service = new Service({
@@ -121,7 +87,7 @@ exports.findOneService = (req, res) => {
 
 };
 
-// Delete a note with the specified noteId in the request
+
 exports.putService = (req, res) => {
 	console.log("Update!");	
 
@@ -132,15 +98,9 @@ Service.findById(req.params.serviceId)
                                         return res.status(404).send({
                                         message: "Subscription not found with id " + req.params.AppId});
                                         }
+
+					checkEndpointService(req,res);
 				
-                                       if((req.body.serCategory.id != null && service.serCategory.id != req.body.serCategory.id) || ( req.body.transportInfo.id != null &&  service.transportInfo.id != req.body.transportInfo.id))
-					{
-					 return res.status(404).send({
-                                         message: "ID doesn't match - you can't update the IDs " 
-                                                                                });
-					}
-				       else
-					{
 					Service.findOneAndUpdate({"_id" : req.params.serviceId},{ 
 					serName : req.body.serName,
                                         "serCategory.href"      : req.body.serCategory.href,
@@ -153,7 +113,7 @@ Service.findById(req.params.serviceId)
 					"transportInfo.endpoint"            : req.body.transportInfo.endpoint,
 					"transportInfo.security"            : req.body.transportInfo.security,
 					"transportInfo.implSpecificInfo"    : req.body.transportInfo.implSpecificInfo
- 						}, {new: true, useFindAndModify: false})
+ 						}, {new: true, useFindAndModify: false, runValidators: true})
     					.then(service => {
         				if(!service) {
             					return res.status(404).send({
@@ -171,7 +131,7 @@ Service.findById(req.params.serviceId)
             				message: "Error updating service with " + req.params.serviceId
         						});
     						});
-					};
+					
 					
                                 }).catch(err => {
                                                         if(err.kind === 'ObjectId') {
@@ -208,3 +168,52 @@ exports.deleteService = (req, res) => {
         });
     });
 };
+
+
+function checkEndpointService(req,res) {
+
+var isEmpty = true;
+var checker = false;
+var howManyElements = 0;
+    for (var itemsFromBodyIndex in req.body.transportInfo.endpoint){
+            console.log(itemsFromBodyIndex);
+            isEmpty = false;
+	if(itemsFromBodyIndex == "uris")
+                {
+                     howManyElements++;
+                     checker = true;					
+                }
+            if(itemsFromBodyIndex == "addresses")
+                {
+                    howManyElements++;
+                    checker = true;
+                for (var host in req.body.transportInfo.endpoint.addresses){
+                       if((Object.keys(req.body.transportInfo.endpoint.addresses[host]).findIndex(obj => obj == "host") < 0 ) ||  (Object.keys(req.body.transportInfo.endpoint.addresses[host]).findIndex(obj => obj == "port") < 0 ) ){
+                            console.log("false")
+                            checker = false;
+						}
+					}
+				}
+            if(itemsFromBodyIndex == "alternative")
+                {
+                    howManyElements++;
+                    checker = true;
+                }
+                if(howManyElements > 1)
+                    {
+                        checker = false;
+                    }
+                }
+										
+	     if(!(isEmpty || checker))
+               {
+                res.status(400).send({
+                message: "Incorrect Body request. - endpoint"
+                });
+                return false;
+               }else{
+	         return true;
+		}
+
+}
+

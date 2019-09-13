@@ -1,5 +1,3 @@
-const TermSub = require('../models/sub.model.js');
-const SerAva = require('../models/serAva.model.js');
 var http = require('http');
 var url = require('url') ;
 const now = require('nano-time');
