@@ -1,0 +1,11 @@
+{
+  "779|mongoose>mpath": {
+    "fix": 1
+  },
+  "782|mongoose>async>lodash": {
+    "fix": 1
+  },
+  "1065|mongoose>async>lodash": {
+    "fix": 1
+  }
+}
