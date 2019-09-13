@@ -11,8 +11,7 @@
         ProxyPassReverse http://127.0.0.1:8181/
     </Location>
 
-
-    <Location /mp1/v1/timing/>
+	<Location /mp1/v1/timing/>
 
         RewriteEngine On
 
@@ -28,13 +27,16 @@
         RewriteEngine On
 
         RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/dns_rules/([^/\.]+)/"
-        RewriteCond "%{REQUEST_METHOD}" "^GET$|^PUT$|^DELETE$"
-        RewriteRule "/mp1/v1/applications/([^/\.]+)/dns_rules/([^/\.]+)" "http://10.0.15.15:8080/applications/$1/dns_rules/$2" [P,L]
+        RewriteCond "%{REQUEST_METHOD}" "^GET$|^PUT$"
+        RewriteRule "/mp1/v1/applications/([^/\.]+)/dns_rules/([^/\.]+)" "http://10.0.15.9:8080/applications/$1/dns_rules/$2" [P,L]
 
+        RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/dns_rules/([^/\.]+)/"
+        RewriteCond "%{REQUEST_METHOD}" "^DELETE$"
+        RewriteRule "/mp1/v1/applications/([^/\.]+)/dns_rules/([^/\.]+)" "http://10.0.15.9:3000/applications/$1/dns_rules/$2" [P,L]
 
-		RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/dns_rules/"
+        RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/dns_rules/"
         RewriteCond "%{REQUEST_METHOD}" "^GET$|^POST$"
-        RewriteRule "/mp1/v1/applications/([^/\.]+)/dns_rules/" "http://10.0.15.15:8080/applications/$1/dns_rules/" [P,L]
+        RewriteRule "/mp1/v1/applications/([^/\.]+)/dns_rules/" "http://10.0.15.9:8080/applications/$1/dns_rules/" [P,L]
 
         ############################ Subscriptions ##########################
 
@@ -43,7 +45,7 @@
         RewriteRule "/mp1/v1/applications/([^/\.]+)/subscriptions/([^/\.]+)/([^/\.]+)" "http://10.0.15.10:3000/mp1/v1/applications/$1/subscriptions/$2/$3/" [P,L]
 
         RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/subscriptions/"
-        RewriteCond "%{REQUEST_METHOD}" "^GET$|^POST$"
+        RewriteCond "%{REQUEST_METHOD}" "^GET$|^POST$|^DELETE$"
         RewriteRule "/mp1/v1/applications/([^/\.]+)/subscriptions/" "http://10.0.15.10:3000/mp1/v1/applications/$1/subscriptions/" [P,L]
 
     </Location>
