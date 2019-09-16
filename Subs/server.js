@@ -19,8 +19,9 @@ mongoose.Promise = global.Promise;
 
 // Connecting to the database
 mongoose.connect(dbConfig.url, {
-//	if (err) throw err;
-	useNewUrlParser: true
+	useNewUrlParser: true,
+    useUnifiedTopology: true,
+     useCreateIndex: true
 }).then(() => {
     console.log("Successfully connected to the database");    
 //    db = client.db('easy-notes')
