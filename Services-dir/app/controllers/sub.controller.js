@@ -35,7 +35,11 @@ exports.createService = (req, res) => {
         							res.send(data);
     								}).catch(err => {
         									res.status(500).send({
-            									message: err.message || "Some error occurred while creating the Note."
+            								 	type   : "URI",
+										title  : "Wrong ID",
+										status : 500,
+										detail :  err.message || "Some error occurred while creating the Note.",
+										instance : "URI"
         												});
     										}); 
 };
@@ -56,7 +60,11 @@ exports.findAllServices = (req, res) => {
         res.send(services);
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
+	    type   : "URI",
+	    title  : "Wrong ID",
+	    status : 500,
+	    detail :  err.message || "Some error occurred while retrieving services.",
+	    instance : "URI"
         });
     });
 };
@@ -69,19 +77,32 @@ exports.findOneService = (req, res) => {
 				console.log("One service");
         			if(!service) {
             				return res.status(404).send({
-                			message: "Note not found with id " + req.params.serviceId});
-        				}
+                				type   : "URI",
+						title  : "Wrong ID",
+						status : 404,
+						detail :   "Note not found with id " + req.params.serviceId,
+						instance : "URI"
+        				})
+				}
       					 // res.send(note._links.subscription);
         				res.send(service);
     				}).catch(err => {
         						if(err.kind === 'ObjectId') {
             						return res.status(404).send({
-                					message: "Note not found with id " + req.params.serviceId
+                						type   : "URI",
+								title  : "Wrong ID",
+								status : 404,
+								detail :   "Note not found with id " + req.params.serviceId,
+								instance : "URI"
             									});
         					}
         			return res.status(500).send({
-            			message: "Error retrieving note with id " + req.params.serviceId
-        							});
+        							type   : "URI",
+								title  : "Wrong ID",
+								status : 500,
+								detail : "Error retrieving note with id " + req.params.serviceId,
+								instance : "URI"
+								});
     						});
 
 
@@ -96,7 +117,12 @@ Service.findById(req.params.serviceId)
                                  console.log("ser in");
                                 if(!service) {
                                         return res.status(404).send({
-                                        message: "Subscription not found with id " + req.params.AppId});
+                                        	type   : "URI",
+						title  : "Wrong ID",
+						status : 404,
+						detail : "Service not found with id " + req.params.AppId,
+						instance : "URI"
+							});
                                         }
 
 					checkEndpointService(req,res);
@@ -117,18 +143,31 @@ Service.findById(req.params.serviceId)
     					.then(service => {
         				if(!service) {
             					return res.status(404).send({
-                				message: "Service not found with id " + req.params.serviceId
+                					type   : "URI",
+							title  : "Wrong ID",
+							status : 404,
+							detail : "Service not found with id " + req.params.serviceId,
+							instance : "URI"
             					});
         				}
         				res.send(service);
     					}).catch(err => {
         					if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             					return res.status(404).send({
-                				message: "Service not found with id " + req.params.serviceId
+                				    type   : "URI",
+						    title  : "Wrong ID",
+						    status : 404,
+						    detail : "Service not found with id " + req.params.serviceId,
+						    instance : "URI"
             					});
         				}
         				return res.status(500).send({
-            				message: "Error updating service with " + req.params.serviceId
+            						type   : "URI",
+							title  : "Wrong ID",
+							status : 500,
+							detail : "Error updating service with " + req.params.serviceId,
+							instance : "URI"	
+						
         						});
     						});
 					
@@ -136,11 +175,19 @@ Service.findById(req.params.serviceId)
                                 }).catch(err => {
                                                         if(err.kind === 'ObjectId') {
                                                         return res.status(404).send({
-                                                        message: "Cannot foind given subscription " + req.params.AppId
+                                                        	type   : "URI",
+								title  : "Wrong ID",
+								status : 404,
+								detail : "Cannot foind given subscription " + req.params.AppId,
+								instance : "URI"
                                                                                 });
                                                 }
                                 return res.status(500).send({
-                                message: "Error retrieving Subscription with id " + req.params.AppId
+                                		type   : "URI",
+						title  : "Wrong ID",
+						status : 500,
+						detail :  "Error retrieving Subscription with id " + req.params.AppId,
+						instance : "URI"
                                                                 });
                                          });
 				
@@ -153,19 +200,31 @@ exports.deleteService = (req, res) => {
     .then(service => {
         if(!service) {
             return res.status(404).send({
-                message: "Service not found with id " + req.params.serviceId
+                type   : "URI",
+		title  : "Wrong ID",
+		status : 404,
+		detail :  "Service not found with id " + req.params.serviceId,
+		instance : "URI"
             });
         }
         res.send({message: "Service deleted successfully!"});
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
-                message: "Service not found with id " + req.params.serviceId
+                type   : "URI",
+		title  : "Wrong ID",
+		status : 404,
+		detail :  "Service not found with id " + req.params.serviceId,
+		instance : "URI"
             });
         }
         return res.status(500).send({
-            message: "Could not delete Service with id " + req.params.serviceId
-        });
+        	type   : "URI",
+		title  : "Wrong ID",
+		status : 500,
+		detail :  "Could not delete Service with id " + req.params.serviceId,
+		instance : "URI"
+	});
     });
 };
 
@@ -208,7 +267,11 @@ var howManyElements = 0;
 	     if(!(isEmpty || checker))
                {
                 res.status(400).send({
-                message: "Incorrect Body request. - endpoint"
+                	type   : "URI",
+			title  : "Wrong ID",
+			status : 400,
+			detail :  "Incorrect Body request. - endpoint",
+			instance : "URI"
                 });
                 return false;
                }else{

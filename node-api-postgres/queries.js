@@ -15,7 +15,13 @@ const deleteDNS = (request, response) => {
  pool.query('select * from  dns_records where id = $1', [id],(error, results) => {
  	console.log(results.rows)
 	if(!results.rows[0]){
-		response.status(400).send(`DNS  with ID: ${id} does not exist`);
+		response.status(400).send({
+						type   : "URI",
+						title  : "Wrong ID",
+						status : 400,
+						detail :  `DNS  with ID: ${id} does not exist`,
+						instance : "URI"
+					});
 	}                    
 	else{
 		
@@ -30,8 +36,15 @@ const deleteDNS = (request, response) => {
                                         }
                                         else
                                         {
-                                                response.status(200).send(`DNS deleted with ID: ${id}`)
-                                        }
+                                                response.status(200).send({
+							
+							type   : "URI",
+							title  : "Wrong ID",
+							status : 200,
+							detail :  `DNS deleted with ID: ${id}`,
+							instance : "URI"
+						})
+                                       }
                                 })
                             }
                 	})
