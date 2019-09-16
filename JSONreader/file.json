@@ -1,0 +1,170 @@
+{
+	"appDId": "060b57a8-62bd-4d48-a471-0d28466d1fbb",
+	"appName": "TestApp_001",
+	"appProvider": "ORANGE OLP",
+	"appSoftVersion": "0.5.2",
+	"appDVersion": "1.1.1",
+	"mecVersion": [
+		"201707"
+	],
+	"appInfoName": "Aplikacja Testowa no 1",
+	"appDescription": "Aplication to test of functionality DNS Forwarding in MEC",
+	"virtualComputeDescriptor": {
+		"virtualComputeDescId": "0ac8d5fb-c157-45e1-8f37-ef2727a66aba",
+		"requestAdditionalCapabilities": [],
+		"virtualMemory": {
+			"virtualMemSize": 256
+		},
+		"virtualCpu": {
+			"cpuArchitecture": "x86",
+			"numVirtualCpu": 4,
+			"virtualCpuClock": 2200,
+			"virtualCpuOversubscriptionPolicy": {},
+			"virtualCpuPinning": {
+				"cpuPinningPolicy": "dynamic"
+			}
+		}
+	},
+	"swImageDescriptor": {
+		"id": "eea65b11-0f3f-442b-89e5-36b682502450",
+		"name": "ExampleTestApplication",
+		"version": "0.5.2",
+		"checksum": "SHA256:0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+		"containerFormat": "qcow2",
+		"diskFormat": "ext4",
+		"minDisk": 20000,
+		"minRam": 2048,
+		"size": 686,
+		"swImage": "image/naszobraz.qcow2",
+		"operatingSystem": "CentOS 7.8 x86_64",
+		"supportedVirtualisationEnvironment": [
+			"kvm"
+		]
+	},
+	"virtualStorageDescriptor": [
+		{
+			"id": "39462734-8f80-4c29-8f5a-68252fcb8fbf",
+			"typeOfStorage": "vaolume",
+			"sizeOfStorage": 20,
+			"rdmaEnabled": false
+		}
+	],
+	"appExtCpd": [
+		{
+			"virtualNetworkInterfaceRequirements": [],
+			"cpdId": "224a05d6-fd1c-463e-8a78-cb2af6da5369",
+			"description": "external network",
+			"addressData": {
+				"addressType": "IP",
+				"l3AddressData": {
+					"iPAddressAssignment": true,
+					"floatingIpActivated": true,
+					"iPAddressType": "IPv4",
+					"numberOfIpAddress": 1
+				}
+			}
+		}
+	],
+	"appTrafficRule": [
+		{
+			"trafficRuleId": "234567b7",
+			"filterType": "PACKET",
+			"priority": 100,
+			"trafficFilter": {
+				"dstPort": [
+					"80",
+					"8080",
+					"443"
+				]
+			},
+			"action": "PASSTHROUGH"
+		}
+	],
+	"appDNSRule": [
+		{
+			"dnsRuleId": "000000006c75f0bd016c75eea35b0000",
+			"domainName": "wp.pl",
+			"ipAddressType": "IP_V4",
+			"ipAddress": "0.0.0.0/32",
+			"ttl": 64,
+			"state": "ACTIVE"
+		}
+	],
+	"sevices": {
+			"serName": "ExampleService",
+			"serCategory": {
+				"href": "catItem1",
+				"id": "id12345",
+				"name": "RNI",
+				"version": "version1"
+			},
+			"version": "ServiceVersion1",
+			"state": "ACTIVE",
+			"transportId": "Rest1",
+			"transportInfo": {
+				"id": "TransId12345",
+				"name": "REST",
+				"description": "REST API",
+				"type": "REST_HTTP",
+				"protocol": "HTTP",
+				"version": "2.0",
+				"endpoint": {},
+				"security": {
+					"oAuth2Info": {
+						"grantTypes": [
+							"OAUTH2_CLIENT_CREDENTIALS"
+					],
+			"tokenEndpoint": "/meMp1/security/TokenEndPoint"
+					}
+				},
+			"implSpecificInfo": {}
+			},
+			"serializer": "JSON"
+	},
+	"subscriptions" : [
+			
+				{
+	"SerAvailabilityNotificationSubscription" :
+	{
+			"subscriptionType"  : "SerAvailabilityNotificationSubscription",
+			"callbackReference"	: "xd",
+			"_links" : {
+					"self" : {
+							"href": "MEC1/subscription/SerAvailabilityNotificationSubscription/_ID1"}
+														},
+			"filteringCriteria" : {
+						"serInstanceId"		: "MEC1",
+						"serName"		: "ExampleService",
+						"serCategory"		: {
+										"href" 		:	"catItem1",
+										"id"		:	"id12345",
+										"name"		:	"RNI",
+										"version"	:	"version1"
+									},
+						"version"			: "ServiceVersion1",
+						"state"				: "ACTIVE",
+						"transportInfo"		: {
+										"id"	:	"Trans",
+										"name"	:	"REST",
+										"description"       :	"RESTAPI",
+										"type"	:	"REST_HTTP",
+										"protocol"      :	"RHTTP",
+										"version"	:	"2.0",
+										"endpoint"	:	{ "addresses" : ["12312","23414234"] },
+										"security"	:	{																				"oAuth2Info" : {
+													"grantTypes" : 	["X1","X2"],   																			  "tokenEndpoint" : "/meMp1/security/TokenEndPoint"}},
+						"imp1SpecificInfo" : "TOBEDONE"},
+						"serializer"       : "XML"}
+			
+	}
+}		
+	],
+	"appLatency": {
+		"timeUnit": "uint32",
+		"latency": "string"
+	},
+	"terminateAppInstanceOpConfig": {
+		"minGracefulTerminationTimeout": 20,
+		"maxRecommendedGracefulTerminationTimeout": 40
+	}
+}
