@@ -3,7 +3,6 @@ module.exports = (app) => {
     const basicAuth = require('express-basic-auth')
 
     //Retrieve a single Service with serviceId
-    app.get('/mp1/v1/services/:serviceId', subs.findOneService);     
 
     // Retrieve all termsubs
     app.get('/mp1/v1/applications/:AppId/subscriptions', subs.findAll);
@@ -12,7 +11,6 @@ module.exports = (app) => {
     app.get('/mp1/v1/applications/:AppId/subscriptions/:subType/:subId', subs.findOne);
 
     // Retrieve all Services
-    app.get('/mp1/v1/services', subs.findAllServices);
 
 //FROM HERE I NEED AUTH
     app.use(basicAuth({
@@ -24,9 +22,6 @@ module.exports = (app) => {
     // Update a Service with serviceId
     app.put('/mp1/v1/services/:serviceId', subs.putService);
 
-    app.post('/mp1/v1/services', subs.createService);
-
     app.delete('/mp1/v1/applications/:AppId/subscriptions/:subType/:subId', subs.delete);
 
-    app.delete('/mp1/v1/services/:serviceId', subs.deleteService);
 }
