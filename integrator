@@ -41,11 +41,11 @@
         ############################ Subscriptions ##########################
 
         RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/subscriptions/([^/\.]+)/([^/\.]+)/"
-        RewriteCond "%{REQUEST_METHOD}" "^GET$|^PUT$"
+        RewriteCond "%{REQUEST_METHOD}" "^GET$|^PUT$|^DELETE$"
         RewriteRule "/mp1/v1/applications/([^/\.]+)/subscriptions/([^/\.]+)/([^/\.]+)" "http://10.0.15.10:3000/mp1/v1/applications/$1/subscriptions/$2/$3/" [P,L]
 
         RewriteCond "%{REQUEST_URI}" "/mp1/v1/applications/([^/\.]+)/subscriptions/"
-        RewriteCond "%{REQUEST_METHOD}" "^GET$|^POST$|^DELETE$"
+        RewriteCond "%{REQUEST_METHOD}" "^GET$|^POST$"
         RewriteRule "/mp1/v1/applications/([^/\.]+)/subscriptions/" "http://10.0.15.10:3000/mp1/v1/applications/$1/subscriptions/" [P,L]
 
     </Location>
