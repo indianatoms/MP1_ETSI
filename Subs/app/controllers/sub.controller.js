@@ -51,7 +51,7 @@ exports.create = (req, res) => {
           			const termsub = new TermSub({
                 			AppTerminationNotificationSubscription : req.body.AppTerminationNotificationSubscription
                 			});
-				var href = 'http://' + hostname + pathname + '/'  + termsub.AppTerminationNotificationSubscription.subscriptionType + termsub._id	
+				var href = 'http://' + hostname + pathname + termsub.AppTerminationNotificationSubscription.subscriptionType + '/' + termsub._id	
 				termsub.AppTerminationNotificationSubscription._links.self.href = href;
 
 					
@@ -61,7 +61,7 @@ exports.create = (req, res) => {
     								}).catch(err => {
         									res.status(500).send({
                                                  type   : "URI",
-                                                 title  : "Bad request Body",
+                                                 title  : "Subscription creation Error",
                                                  status : 400,
                                                  detail : err.message || "Some error occurred while creating the Subscription.",
                                                  instance : "URI"
@@ -88,7 +88,7 @@ exports.create = (req, res) => {
 					appInstanceId	: req.params.AppId,
 					SerAvailabilityNotificationSubscription : req.body.SerAvailabilityNotificationSubscription
 					});
-					var href = 'http://' + hostname + pathname + '/'  + serAva.SerAvailabilityNotificationSubscription.subscriptionType +  serAva._id
+					var href = 'http://' + hostname + pathname + serAva.SerAvailabilityNotificationSubscription.subscriptionType + '/' + serAva._id
 					serAva.SerAvailabilityNotificationSubscription._links.self.href = href;
 					// Save Note in the database
     					serAva.save().then(data => {
@@ -96,7 +96,7 @@ exports.create = (req, res) => {
     								}).catch(err => {
         									res.status(500).send({
                                                 type   : "URI",
-                                                 title  : "Add Sub Error",
+                                                 title  : "Add Subscription Error",
                                                  status : 500,
                                                  detail : err.message || "Some error occurred while creating the Subscription.",
                                                  instance : "URI"
@@ -221,6 +221,18 @@ exports.findOne = (req, res) => {
 	}
 };
 
+exports.purge = (req, res)=> {
+ console.log('purge');
+ TermSub.remove({}, function(err) { 
+        console.log('TerSub collection removed') 
+ });
+ SerAva.remove({}, function(err) { 
+        console.log('TermSub collection removed') 
+ });
+ res.send({message: "DB purged successfully!"});
+}
+
+
 // Delete a Subscription with the specified AppId in the request
 exports.delete = (req, res) => {
     console.log('deleteone');
@@ -332,7 +344,7 @@ var howManyElements = 0;
                {
                 res.status(400).send({
                     type   : "URI",
-                    title  : "Wrong ID",
+                    title  : "Wrong Endpoint",
                     status : 400,
                     detail :  "Incorrect Body request. - endpoint",
                     instance : "URI"

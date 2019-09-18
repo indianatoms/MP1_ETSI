@@ -10,7 +10,11 @@ exports.createService = (req, res) => {
 	console.log("POST - Create - Service")
     if(!req.body) {
         return res.status(400).send({
-            message: "Note content can not be empty"
+		type   : "URI",
+                title  : "Wrong request body",
+                status : 400,
+                detail :  "Note content can not be empty",
+                instance : "URI"
         });
     }
     
@@ -36,9 +40,9 @@ exports.createService = (req, res) => {
     								}).catch(err => {
         									res.status(500).send({
             								 	type   : "URI",
-										title  : "Wrong ID",
+										title  : "Add service error",
 										status : 500,
-										detail :  err.message || "Some error occurred while creating the Note.",
+										detail :  err.message || "Some error occurred while creating the Service.",
 										instance : "URI"
         												});
     										}); 
@@ -61,7 +65,7 @@ exports.findAllServices = (req, res) => {
     }).catch(err => {
         res.status(500).send({
 	    type   : "URI",
-	    title  : "Wrong ID",
+	    title  : "Add Service Error",
 	    status : 500,
 	    detail :  err.message || "Some error occurred while retrieving services.",
 	    instance : "URI"
@@ -193,6 +197,15 @@ Service.findById(req.params.serviceId)
 				
 };
 
+exports.purge = (req, res)=> {
+ console.log('purge');
+ Service.remove({}, function(err) {
+        console.log('Service collection removed')
+  });
+ res.send({message: "DB purged successfully!"});
+}
+
+
 exports.deleteService = (req, res) => {
     console.log('deleteone');
        
@@ -268,7 +281,7 @@ var howManyElements = 0;
                {
                 res.status(400).send({
                 	type   : "URI",
-			title  : "Wrong ID",
+			title  : "Wrong Endpoint",
 			status : 400,
 			detail :  "Incorrect Body request. - endpoint",
 			instance : "URI"

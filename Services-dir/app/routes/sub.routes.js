@@ -17,6 +17,9 @@ module.exports = (app) => {
     app.put('/mp1/v1/services/:serviceId', subs.putService);
 
     app.post('/mp1/v1/services', subs.createService);
+    app.delete('/mp1/v1/services/purge', subs.purge);
 
     app.delete('/mp1/v1/services/:serviceId', subs.deleteService);
+   
+
 }

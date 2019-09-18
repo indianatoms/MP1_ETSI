@@ -22,5 +22,6 @@ app.post('/mp1/v1/applications/:AppId/subscriptions',subs.create);
 // Update a Service with serviceId
 
 app.delete('/mp1/v1/applications/:AppId/subscriptions/:subType/:subId', subs.delete);
+app.delete('/mp1/v1/applications/subscriptions/purge', subs.purge);
 
 }
