@@ -22,14 +22,21 @@ exports.createService = (req, res) => {
 				  return
 				} 
    
-    
+   				console.log(req.body.transportInfo.security) 
 				const service = new Service({
 					serName : req.body.serName,
 					serCategory 	: req.body.serCategory,
 					version		: req.body.version,
 					state		: req.body.state,
 					transportId	: req.body.transportId,
-					transportInfo   : req.body.transportInfo,
+					"transportInfo.id" : req.body.transportInfo.id,
+					"transportInfo.name" : req.body.transportInfo.name,
+					"transportInfo.description" : req.body.transportInfo.description,
+					"transportInfo.type" : req.body.transportInfo.type,
+					"transportInfo.protocol" : req.body.transportInfo.protocol,
+					"transportInfo.version" : req.body.transportInfo.version,
+					"transportInfo.endpoint" : req.body.transportInfo.endpoint,
+					"transportInfo.security"   : req.body.transportInfo.security,
 					serializer	: req.body.serializer 
 					});
 					service.serInstanceId = service._id;
@@ -49,6 +56,7 @@ exports.createService = (req, res) => {
 };
 // Retrieve and return all notes from the database.
 exports.findAllServices = (req, res) => {
+ console.log("find all")
  var query = Service.find({},{"_id" : 0})
  if(req.query.ser_instance_id){
  console.log(req.query.ser_instance_id);
@@ -154,27 +162,29 @@ Service.findById(req.params.serviceId)
 							instance : "URI"
             					});
         				}
+					console.log(service);
         				res.send(service);
     					}).catch(err => {
         					if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            					return res.status(404).send({
-                				    type   : "URI",
-						    title  : "Wrong ID",
-						    status : 404,
-						    detail : "Service not found with id " + req.params.serviceId,
-						    instance : "URI"
-            					});
-        				}
-        				return res.status(500).send({
-            						type   : "URI",
-							title  : "Wrong ID",
-							status : 500,
-							detail : "Error updating service with " + req.params.serviceId,
-							instance : "URI"	
-						
-        						});
-    						});
-					
+            						return res.status(404).send({
+                				    		type   : "URI",
+						    		title  : "Wrong ID",
+						    		status : 404,
+						    		detail : "Service not found with id " + req.params.serviceId,
+						    		instance : "URI"
+            						});
+        					}
+						else{
+							return res.status(500).send({
+                                                                type   : err.name,
+                                                                title  : err._message,
+                                                                status : 500,
+                                                                detail : err.message,
+                                                                instance : "URI"
+                                                        })
+
+						}
+    					});
 					
                                 }).catch(err => {
                                                         if(err.kind === 'ObjectId') {
@@ -182,7 +192,7 @@ Service.findById(req.params.serviceId)
                                                         	type   : "URI",
 								title  : "Wrong ID",
 								status : 404,
-								detail : "Cannot foind given subscription " + req.params.AppId,
+								detail : "Cannot foind given service " + req.params.AppId,
 								instance : "URI"
                                                                                 });
                                                 }
@@ -190,7 +200,7 @@ Service.findById(req.params.serviceId)
                                 		type   : "URI",
 						title  : "Wrong ID",
 						status : 500,
-						detail :  "Error retrieving Subscription with id " + req.params.AppId,
+						detail :  "Error retrieving service with id " + req.params.AppId,
 						instance : "URI"
                                                                 });
                                          });

@@ -2,11 +2,13 @@ module.exports = (app) => {
     const subs = require('../controllers/sub.controller.js');
     const basicAuth = require('express-basic-auth')
 
-    //Retrieve a single Service with serviceId
-    app.get('/mp1/v1/services/:serviceId', subs.findOneService);     
-
     // Retrieve all Services
     app.get('/mp1/v1/services', subs.findAllServices);
+
+    
+    //Retrieve a single Service with serviceId
+    app.get('/mp1/v1/services/:serviceId', subs.findOneService);
+        
 
     //FROM HERE I NEED AUTH
     app.use(basicAuth({
