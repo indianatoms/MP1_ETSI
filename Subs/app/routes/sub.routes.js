@@ -5,7 +5,7 @@ module.exports = (app) => {
 		//Retrieve a single Service with serviceId
 
 		// Retrieve all termsubs
-		app.get('/mp1/v1/applications/:AppId/subscriptions', subs.findAll);
+	app.get('/mp1/v1/applications/:AppId/subscriptions', subs.findAll);
 
 	// Retrieve a single Note with AppId
 	app.get('/mp1/v1/applications/:AppId/subscriptions/:subType/:subId', subs.findOne);

@@ -4,13 +4,13 @@ const AppTerm = mongoose.Schema({
 
 			AppTerminationNotificationSubscription :
 	{
-			subscriptionType  : String,
-			callbackReference : String,
+			subscriptionType  : { type : String, required: true},
+			callbackReference : { type : String, required: true},
 			_links : {
 					self : {
 							href : {type : String, unique : true}}
 														},
-			appInstanceId     : String
+			appInstanceId     : { type : String , required: true }
 	}
 },
 {

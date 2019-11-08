@@ -16,7 +16,7 @@ exports.create = (req, res) => {
             title  : "Bad request Body",
             status : 400,
             detail : "Subscription content can not be empty",
-            instance : "URI"
+            instance : req.body.AppTerminationNotificationSubscription || req.body.SerAvailabilityNotificationSubscription
         });
     }
                         var hostname = req.headers.host; // hostname = 'localhost:8080'
@@ -24,7 +24,8 @@ exports.create = (req, res) => {
 
 			//CHeck Subscription type
 			if(req.body.AppTerminationNotificationSubscription){
-
+                console.log(req.params.AppId);
+                console.log(req.body.AppTerminationNotificationSubscription.appInstanceId)
 				if (req.params.AppId != req.body.AppTerminationNotificationSubscription.appInstanceId)
 					{
 						res.status(400).send({
@@ -81,16 +82,24 @@ exports.create = (req, res) => {
                                               });
                                             return;
                                         }
-					
-					checkEndpoint(req,res);					
+			if(req.body.SerAvailabilityNotificationSubscription.filteringCriteri){		
+				if(!checkEndpoint(req,res))
+                			{
+                    			return;
+                			}
+				}		
 				//create serAva type
+				console.log("SERAVA");
+				console.log(req.body.SerAvailabilityNotificationSubscription)
 				const serAva = new SerAva({
 					appInstanceId	: req.params.AppId,
-					SerAvailabilityNotificationSubscription : req.body.SerAvailabilityNotificationSubscription
+					"SerAvailabilityNotificationSubscription.subscriptionType" : req.body.SerAvailabilityNotificationSubscription.subscriptionType,
+					"SerAvailabilityNotificationSubscription.callbackReference": req.body.SerAvailabilityNotificationSubscription.callbackReference,
+"SerAvailabilityNotificationSubscription.filteringCriteria" : req.body.SerAvailabilityNotificationSubscription.filteringCriteria
 					});
 					var href = 'http://' + hostname + pathname + serAva.SerAvailabilityNotificationSubscription.subscriptionType + '/' + serAva._id
-					serAva.SerAvailabilityNotificationSubscription._links.self.href = href;
-					// Save Note in the database
+					serAva.SerAvailabilityNotificationSubscription._links.self.href = href;					
+// Save Note in the database
     					serAva.save().then(data => {
         							res.send(data);
     								}).catch(err => {
@@ -158,22 +167,34 @@ exports.findOne = (req, res) => {
 	if(req.params.subType == "AppTerminationNotificationSubscription"){
 		  TermSub.findById(req.params.subId)
     			.then(termsub => {
+                    console.log(termsub.AppTerminationNotificationSubscription.appInstanceId + "|||" + req.params.AppId);
+
         			if(!termsub) {
             				return res.status(404).send({
                                  type   : "URI",
                                  title  : "Wrong ID",
                                  status : 404,
-                                 detail : "Subscription not found with id " + req.params.AppId,
+                                 detail : "Subscription not found with id " + req.params.subId,
                                  instance : "URI"
         				})}
+                    else if (termsub.AppTerminationNotificationSubscription.appInstanceId != req.params.AppId){
+                        return res.status(404).send({
+                                                             type   : "URI",
+                                                             title  : "Wrong ID",
+                                                             status : 404,
+                                                             detail : "This ID is not in given App Instance: " + req.params.AppId,
+                                                             instance : "URI"
+                                                    })}
+
         				res.send(termsub);
+                        return;
     				}).catch(err => {
         						if(err.kind === 'ObjectId') {
             						return res.status(404).send({
                                         type   : "URI",
                                         title  : "Wrong ID",
                                         status : 404,
-                                        detail : "Subscription not found with id " + req.params.AppId,
+                                        detail : "Subscription not found with id " + req.params.subId,
                                         instance : "URI"
             									});
         					}
@@ -181,7 +202,7 @@ exports.findOne = (req, res) => {
                         type   : "URI",
                                                                    title  : "Wrong ID",
                                                                    status : 500,
-                                                                   detail : "Subscription not found with id " + req.params.AppId,
+                                                                   detail : "Subscription not found with id " + req.params.subId,
                                                                    instance : "URI"
         							});
     						});
@@ -189,6 +210,8 @@ exports.findOne = (req, res) => {
 	}else if(req.params.subType == "SerAvailabilityNotificationSubscription"){
 		 SerAva.findById(req.params.subId)
                         .then(serava => {
+                            console.log(serava.appInstanceId + "|||" + req.params.AppId);
+
                                 if(!serava) {
                                         return res.status(404).send({
                                             type   : "URI",
@@ -196,16 +219,25 @@ exports.findOne = (req, res) => {
                                             status : 404,
                                             detail : "Subscription not found with id " + req.params.AppId,
                                             instance : "URI"
-                                        });
-                                }
-                                        send.json(serava);
+                                        })}
+                                else if (serava.appInstanceId != req.params.AppId){
+                                        return res.status(404).send({
+                                            type   : "URI",
+                                            title  : "Wrong ID",
+                                            status : 404,
+                                            detail : "This ID is not in given App Instance: " + req.params.AppId,
+                                            instance : "URI"
+                                        })}
+
+                                        console.log(serava);
+                                        res.send(serava);
                                 }).catch(err => {
                                                         if(err.kind === 'ObjectId') {
                                                         return res.status(404).send({
                                                             type   : "URI",
                                                             title  : "Wrong ID",
                                                             status : 404,
-                                                            detail : "Cannot find given subscription " + req.params.AppId,
+                                                            detail : "Cannot find given subscription " + req.params.subId,
                                                             instance : "URI"
                                                                                 });
                                                 }
@@ -213,7 +245,7 @@ exports.findOne = (req, res) => {
                                     type   : "URI",
                                        title  : "Wrong ID",
                                        status : 500,
-                                       detail :  "Error retrieving Subscription with id " + req.params.AppId,
+                                       detail :  "Error retrieving Subscription with id " + req.params.subId,
                                        instance : "URI"
                                                                 });
                                                 });
@@ -238,18 +270,30 @@ exports.delete = (req, res) => {
     console.log('deleteone');
  	if(req.params.subType == "AppTerminationNotificationSubscription")
 	{
+        
+    TermSub.findById(req.params.subId)
+    .then(termsub => {
+        console.log(termsub.AppTerminationNotificationSubscription.appInstanceId + "|||" + req.params.AppId);
+             if(!termsub) {
+                            return res.status(404).send({
+                            type   : "URI",
+                            title  : "Wrong ID",
+                            status : 404,
+                            detail : "Subscription not found with id " + req.params.subId,
+                            instance : "URI"
+                          })}
+             else if (termsub.AppTerminationNotificationSubscription.appInstanceId != req.params.AppId){
+                            return res.status(404).send({
+                            type   : "URI",
+                            title  : "Wrong ID",
+                            status : 404,
+                            detail : "This ID is not in given App Instance: " + req.params.AppId,
+                            instance : "URI"
+                         })}
+             else{
 	TermSub.findByIdAndRemove(req.params.subId)
     .then(termsub => {
-        if(!termsub) {
-            return res.status(404).send({
-               type   : "URI",
-                title  : "Wrong ID",
-                status : 404,
-                detail :  "Subscription not found with id " + req.params.subId,
-                instance : "URI"
-            });
-        }
-        res.send({message: "Subscription deleted successfully!"});
+       res.send({message: "Subscription deleted successfully!"});
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
@@ -267,8 +311,29 @@ exports.delete = (req, res) => {
                detail :  "Could not delete Subscription with id " + req.params.subId,
                instance : "URI"
         });
-    });
+        });
+    }})
+
 	}else if(req.params.subType == "SerAvailabilityNotificationSubscription"){
+
+     SerAva.findById(req.params.subId)
+     .then(serava => {
+        console.log(serava.appInstanceId + "|||" + req.params.AppId);
+        if(!serava) {
+                 return res.status(404).send({                                                                                                                                                                         type   : "URI",
+                                              title  : "Wrong ID",
+                                              status : 404,
+                                              detail : "Subscription not found with id " + req.params.AppId,
+                                              instance : "URI"                                                                                                                                                        })}
+        else if (serava.appInstanceId != req.params.AppId){
+                 return res.status(404).send({
+                                              type   : "URI",
+                                              title  : "Wrong ID",
+                                              status : 404,
+                                              detail : "This ID is not in given App Instance: " + req.params.AppId,
+                                              instance : "URI"
+                     })}
+        else {
 
 	 SerAva.findByIdAndRemove(req.params.subId)
                         .then(serava => {
@@ -302,10 +367,11 @@ exports.delete = (req, res) => {
     });
 
 	}
+     })}
 };
 
 
-function checkEndpoint(req,res) {
+function checkEndpoint(req,res,next) {
 
 var isEmpty = true;
 var checker = false;
@@ -342,15 +408,17 @@ var howManyElements = 0;
 									
 			if(!(isEmpty || checker))
                {
-                res.status(400).send({
-                    type   : "URI",
-                    title  : "Wrong Endpoint",
-                    status : 400,
-                    detail :  "Incorrect Body request. - endpoint",
-                    instance : "URI"
+               res.status(400).send({
+
+                type   : "URI",
+                title  : "ENDPOINT",
+                status : 400,
+                detail : "wrong type of endpoint defined",
+                instance : "URI"
                 });
-                return;
-               }
+               return false;
+              }
+            return true;
 }
 
 
