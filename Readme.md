@@ -18,9 +18,6 @@ node server.js
 
 You can browse the apis at <http://localhost:3000>
 
-## Tutorial
-You can find the tutorial for this application at [The CalliCoder Blog](https://www.callicoder.com) - 
-
 ## Run as a service : https://stackoverflow.com/questions/12973777/how-to-run-a-shell-script-at-startup
 
 
